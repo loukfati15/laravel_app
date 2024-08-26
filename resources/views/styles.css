@@ -1,0 +1,29 @@
+.btn-custom {
+    border-radius: 50px; /* Round the edges */
+    font-size: 20px; /* Adjust font size */
+    padding: 10px 30px; /* Adjust padding */
+    margin: 0 70px;
+}
+
+.notification-list {
+    list-style-type: none; /* Remove default bullets */
+    padding: 0;
+}
+
+.notification-list li {
+    border: 1px solid #ddd; /* Light grey border */
+    background-color: #f8f9fa; /* Light grey background */
+    margin-bottom: 10px; /* Space between items */
+    padding: 10px; /* Padding inside items */
+    border-radius: 5px; /* Rounded corners */
+}
+
+.analysis-section,
+.graph-container {
+    display: none;
+}
+
+canvas {
+    width: 100% !important;
+    height: 400px !important;
+}
