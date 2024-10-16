@@ -1,3 +1,33 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+/* Styles Globaux */
+body {
+    background: linear-gradient(to right, #f7f8fa, #e9ecef); /* Dégradé professionnel */
+    font-family: 'Roboto', sans-serif; /* Typographie professionnelle */
+    color: #333; /* Couleur de texte principale */
+}
+
+/* Styles des cartes */
+.card {
+    background-color: #ffffff; /* Fond blanc classique */
+    border-radius: 8px; /* Coins arrondis */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Ombre douce pour donner de la profondeur */
+}
+
+/* Boutons */
+.btn {
+    border-radius: 5px; /* Coins légèrement arrondis */
+}
+
+/* Table */
+.table {
+    border-collapse: separate;
+    border-spacing: 0 10px; /* Espacement entre les lignes */
+}
+
+.header-bg {
+    background-color: #343a40; /* Fond sombre pour l'en-tête */
+    color: #ffffff; /* Texte blanc */
+    padding: 15px;
+}

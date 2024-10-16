@@ -74,6 +74,14 @@ Route::middleware(['auth:admin'])->group(function () {
 
     Route::get('/admin/create-admin', [AdminController::class, 'createAdmin'])->name('admin.createAdmin');
     Route::post('/admin/store-admin', [AdminController::class, 'storeAdmin'])->name('admin.storeAdmin');
+
+    Route::get('/admin/users/manage', [AdminController::class, 'manageUsers'])->name('admin.users.manage');
+    Route::patch('/admin/users/{id}/update', [AdminController::class, 'updateUser'])->name('admin.users.update');
+    Route::patch('/admin/users/{id}/updateMainUser', [AdminController::class, 'updateMainUser'])->name('admin.users.updateMainUser');
+
+    Route::get('/admin/payments', [AdminController::class, 'managePayments'])->name('admin.payments.manage');
+    Route::post('/admin/payments/{id}', [AdminController::class, 'updatePayment'])->name('admin.payments.update');
+    Route::post('/admin/payments/create', [AdminController::class, 'createPayment'])->name('admin.payments.create');
 });
 
 require __DIR__.'/auth.php';

@@ -2,6 +2,8 @@
 
 @section('content')
 <div class="container">
+    
+
     <h1>Pending User Approvals</h1>
     <table class="table">
         <thead>

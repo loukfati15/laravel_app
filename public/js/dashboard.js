@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         }
                         var isSuperuserRegion = superuserRegionIds.includes(region.id);
                         console.log(`Region ${region.id} (${region.region_name}) is superuser region: ${isSuperuserRegion}`);
-                        var color = isSuperuserRegion ? 'pink' : 'grey';
+                        var color = isSuperuserRegion ? 'green' : 'grey';
                         console.log(`Color for region ${region.region_name}: ${color}`);
 
                         var polygon = L.geoJSON(regionGeom, {
