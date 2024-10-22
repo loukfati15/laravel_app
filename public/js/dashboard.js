@@ -151,7 +151,7 @@ document.addEventListener('DOMContentLoaded', function () {
         notifications.forEach(notification => notification.remove());
     }
 
-    // Function to fetch and display notifications for selected regions
+    // Fetch and display notifications for selected regions
     function fetchRegionNotifications() {
         const startDate = document.getElementById('start-date').value;
         const endDate = document.getElementById('end-date').value;
@@ -180,21 +180,20 @@ document.addEventListener('DOMContentLoaded', function () {
             });
     }
 
-    // Fonction pour afficher les notifications regroupées par type
+    // Display notifications grouped by type
     function displayNotifications(notificationsGrouped) {
         const notificationList = document.getElementById('notification-list');
-        notificationList.innerHTML = ''; // Efface les notifications précédentes
+        notificationList.innerHTML = ''; // Clear previous notifications
 
         if (Object.keys(notificationsGrouped).length === 0) {
-            notificationList.innerHTML = '<li>Aucune notification disponible pour la période sélectionnée.</li>';
+            notificationList.innerHTML = '<li>No notifications available for the selected period.</li>';
             return;
         }
 
-        // Parcourir chaque région
         Object.keys(notificationsGrouped).forEach(regionId => {
             const regionNotifications = notificationsGrouped[regionId];
-            
-            // Regrouper les notifications par type
+
+            // Group notifications by type
             const notificationsByType = {};
             regionNotifications.forEach(notification => {
                 const type = notification.Type;
@@ -204,7 +203,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 notificationsByType[type].push(notification);
             });
 
-            // Afficher les notifications regroupées par type
+            // Display notifications grouped by type
             Object.keys(notificationsByType).forEach(type => {
                 const typeSection = document.createElement('li');
                 typeSection.innerHTML = `<strong>${type}</strong>`;
@@ -213,7 +212,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const typeList = document.createElement('ul');
                 notificationsByType[type].forEach(notification => {
                     const listItem = document.createElement('li');
-                    listItem.dataset.regionId = regionId; // Stocker l'ID de la région dans l'élément de liste
+                    listItem.dataset.regionId = regionId;
                     listItem.textContent = `Description: ${notification.Description}, Date: ${notification.date}`;
                     typeList.appendChild(listItem);
                 });
@@ -221,11 +220,11 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         });
 
-        document.querySelector('.analysis-section').style.display = 'none'; // Masquer les graphiques
-        notificationList.style.display = 'block'; // Afficher les notifications
+        document.querySelector('.analysis-section').style.display = 'none'; // Hide graphs
+        notificationList.style.display = 'block'; // Show notifications
     }
 
-    // Analyse button event listener
+    // Handle "Analyse" button click
     document.getElementById('analyse-button').addEventListener('click', function () {
         const startDate = document.getElementById('start-date').value;
         const endDate = document.getElementById('end-date').value;
@@ -275,50 +274,35 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        // Hide graphs when displaying notifications
         hideAllGraphs();
         fetchRegionNotifications();
         document.querySelector('.analysis-section').style.display = 'none'; // Hide graphs
     });
 
-    // Event listeners for dropdown items
-    document.getElementById('show-temperature').addEventListener('click', function () {
-        fetchAndDisplayData('temperature');
+    // Event listener for the dropdown selection
+    document.getElementById('analysis-type').addEventListener('change', function () {
+        const selectedValue = this.value;
+        fetchAndDisplayData(selectedValue);
     });
 
-    document.getElementById('show-humidity').addEventListener('click', function () {
-        fetchAndDisplayData('humidity');
-    });
-
-    document.getElementById('show-pressure').addEventListener('click', function () {
-        fetchAndDisplayData('pressure');
-    });
-
-    document.getElementById('show-battery_life').addEventListener('click', function () {
-        fetchAndDisplayData('battery_life');
-    });
-
-    document.getElementById('show-battery_level').addEventListener('click', function () {
-        fetchAndDisplayData('battery_level');
-    });
-
+    // Fetch and display data based on the selected type (temperature, humidity, etc.)
     function fetchAndDisplayData(type, data = null) {
         const startDate = document.getElementById('start-date').value;
         const endDate = document.getElementById('end-date').value;
-    
+
         if (!startDate || !endDate) {
             alert('Please select both start and end dates.');
             return;
         }
-    
+
         if (selectedRegionIds.length === 0) {
             alert('Please select at least one region by double-clicking.');
             return;
         }
-    
+
         const processAndDisplayData = (data) => {
             console.log("Data fetched", data);
-    
+
             const groupedData = {};
             data.forEach(entry => {
                 if (!groupedData[entry.region_name]) {
@@ -327,18 +311,18 @@ document.addEventListener('DOMContentLoaded', function () {
                 entry[type] = parseFloat(entry[type]); // Ensure numbers are parsed
                 groupedData[entry.region_name].push(entry);
             });
-    
+
             const datasets = [];
             let colors = ['rgba(75, 192, 192, 1)', 'rgba(255, 99, 132, 1)', 'rgba(54, 162, 235, 1)'];
             let index = 0;
-    
+
             for (const region in groupedData) {
                 const values = groupedData[region].map(d => d[type]);
-    
+
                 // Calculate and display statistics
                 const stats = calculateStatistics(values);
                 displayStatistics(type, stats);
-    
+
                 datasets.push({
                     label: region,
                     data: values,
@@ -348,16 +332,16 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
                 index++;
             }
-    
+
             const labels = groupedData[Object.keys(groupedData)[0]].map(d => d.date);
-    
+
             showGraph(`${type}-graph`);
             renderChart(`${type}-chart`, type, labels, datasets);
-    
+
             // Render the normal distribution for all regions
             renderNormalDistributionChart(`${type}-normal-chart`, type, groupedData);
         };
-    
+
         if (data) {
             processAndDisplayData(data);
         } else {
@@ -370,9 +354,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
         }
     }
-    
-    
-    
 
     function hideAllGraphs() {
         document.querySelectorAll('.graph-container').forEach(container => {
@@ -442,12 +423,12 @@ document.addEventListener('DOMContentLoaded', function () {
     function displayStatistics(type, stats) {
         const statsContainer = document.getElementById(`${type}-stats`);
         statsContainer.innerHTML = `
-            <p><strong>Statistiques pour ${type}:</strong></p>
+            <p><strong>Statistics for ${type}:</strong></p>
             <ul>
-                <li>Moyenne: ${stats.mean.toFixed(2)}</li>
-                <li>Médiane: ${stats.median.toFixed(2)}</li>
+                <li>Mean: ${stats.mean.toFixed(2)}</li>
+                <li>Median: ${stats.median.toFixed(2)}</li>
                 <li>Variance: ${stats.variance.toFixed(2)}</li>
-                <li>Écart-type: ${stats.stdDeviation.toFixed(2)}</li>
+                <li>Standard Deviation: ${stats.stdDeviation.toFixed(2)}</li>
             </ul>
         `;
     }
@@ -464,21 +445,21 @@ document.addEventListener('DOMContentLoaded', function () {
             'rgba(255, 159, 64, 1)'
         ];
         let index = 0;
-    
+
         // Loop through each region to calculate its normal distribution
         for (const region in groupedData) {
             const values = groupedData[region].map(d => d[label]);
             const mean = values.reduce((a, b) => a + b, 0) / values.length;
             const stdDeviation = Math.sqrt(values.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / values.length);
-    
+
             const normalDistributionData = [];
             for (let x = mean - 4 * stdDeviation; x <= mean + 4 * stdDeviation; x += 0.1) {
                 const y = (1 / (stdDeviation * Math.sqrt(2 * Math.PI))) * Math.exp(-Math.pow(x - mean, 2) / (2 * Math.pow(stdDeviation, 2)));
                 normalDistributionData.push({ x, y });
             }
-    
+
             datasets.push({
-                label: `Distribution Normale pour ${region}`,
+                label: `Normal Distribution for ${region}`,
                 data: normalDistributionData.map(point => ({ x: point.x.toFixed(2), y: point.y.toFixed(4) })),
                 borderColor: colors[index % colors.length],
                 backgroundColor: colors[index % colors.length].replace('1)', '0.2)'),
@@ -487,14 +468,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 showLine: true,
                 tension: 0.4
             });
-    
+
             index++;
         }
-    
+
         if (window[chartId] && typeof window[chartId].destroy === 'function') {
             window[chartId].destroy();
         }
-    
+
         window[chartId] = new Chart(ctx, {
             type: 'scatter',
             data: {
@@ -514,7 +495,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     y: {
                         title: {
                             display: true,
-                            text: 'Probabilité'
+                            text: 'Probability'
                         },
                         beginAtZero: true
                     }
@@ -522,71 +503,4 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     }
-    
-
-    // Function to export data to CSV
-    document.getElementById('export-data').addEventListener('click', function () {
-        exportDataToCSV();
-    });
-    
-    function exportDataToCSV() {
-        let csvContent = "data:text/csv;charset=utf-8,";
-    
-        // Add Notifications Data
-        csvContent += "Notifications\n";
-        csvContent += "Type,Description,Date\n";
-        
-        const notificationList = document.getElementById('notification-list');
-        const notifications = notificationList.getElementsByTagName('li');
-    
-        Array.from(notifications).forEach(notification => {
-            let notificationText = notification.textContent.trim().split(',').map(item => item.split(': ')[1]);
-            csvContent += notificationText.join(",") + "\n";
-        });
-    
-        // Add a blank line between notifications and graph data
-        csvContent += "\n";
-    
-        // Add Graph Data
-        const graphContainers = document.querySelectorAll('.graph-container canvas');
-        graphContainers.forEach(graph => {
-            let chart = window[graph.id]; // Access the Chart.js instance by canvas ID
-            
-            // Check if the chart instance exists and is valid
-            if (chart && chart.data && chart.data.labels) {
-                let labels = chart.data.labels;
-                let datasets = chart.data.datasets;
-    
-                csvContent += `${chart.options.scales.y.title.text}\n`; // Add chart title
-                csvContent += "Date," + datasets.map(ds => ds.label).join(",") + "\n"; // Add header
-    
-                labels.forEach((label, index) => {
-                    let row = [label];
-                    datasets.forEach(ds => {
-                        row.push(ds.data[index]);
-                    });
-                    csvContent += row.join(",") + "\n"; // Add data row
-                });
-    
-                // Add a blank line between charts
-                csvContent += "\n";
-            } else {
-                console.warn(`Chart.js instance not found or invalid for canvas ID: ${graph.id}`);
-            }
-        });
-    
-        // Encode CSV content for download
-        const encodedUri = encodeURI(csvContent);
-        const link = document.createElement("a");
-        link.setAttribute("href", encodedUri);
-        link.setAttribute("download", "dashboard_data.csv");
-        document.body.appendChild(link); // Required for Firefox
-    
-        // Trigger the download
-        link.click();
-    
-        // Clean up the DOM
-        document.body.removeChild(link);
-    }
-
 });

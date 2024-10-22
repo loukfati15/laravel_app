@@ -29,7 +29,7 @@
     <!-- Vite - Application Styles & Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-    <style>
+ <style>
         /* Custom Background and Header Styles */
         body {
             background: linear-gradient(to right, #ece9e6, #ffffff); /* Soft gradient background */
